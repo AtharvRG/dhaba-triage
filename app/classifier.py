@@ -18,6 +18,13 @@ from app.log import log_event
 from app.sanitizer import SanitizeReport
 from app.schemas import BillingFacts, Category, ClassifierResult, RefundDecision, Severity
 
+import threading
+
+# At most this many model calls in flight at once. Above that:
+# degrade immediately instead of queueing forever. (Task 3 story.)
+MAX_IN_FLIGHT = 10
+_in_flight = threading.BoundedSemaphore(MAX_IN_FLIGHT)
+
 API_URL = "https://api.mistral.ai/v1/chat/completions"
 
 SYSTEM_PROMPT = """You are the triage assistant for Dhaba, an Indian food app.
@@ -137,23 +144,29 @@ def classify(ticket, facts: BillingFacts, refund: RefundDecision,
     # fixture mode: canned outputs, zero API calls
     return _classify_fixture(ticket.id)
 
-
 def _classify_live(user_prompt: str) -> ClassifierResult:
-    last_error = "unknown"
-    for attempt in (1, 2):  # try, then one retry
-        try:
-            raw = _call_model(SYSTEM_PROMPT, user_prompt)
-            return _validate(raw)
-        except (json.JSONDecodeError, ValidationError, ValueError, TypeError) as e:
-            last_error = f"invalid_output:{type(e).__name__}"
-            log_event("model_output_rejected", status=last_error,
-                      mode="live", attempt=attempt, model=settings.model_name)
-        except httpx.HTTPError as e:
-            last_error = f"api_error:{type(e).__name__}"
-            log_event("model_call_failed", status=last_error,
-                      mode="live", attempt=attempt, model=settings.model_name)
-    log_event("classifier_degraded", status=last_error, mode="live")
-    return _degraded_result(last_error)
+    if not _in_flight.acquire(blocking=False):
+        log_event("classifier_degraded", status="overloaded", mode="live")
+        return _degraded_result("overloaded")
+    try:
+        # ... existing for-attempt loop, unchanged ...
+        last_error = "unknown"
+        for attempt in (1, 2):
+            try:
+                raw = _call_model(SYSTEM_PROMPT, user_prompt)
+                return _validate(raw)
+            except (json.JSONDecodeError, ValidationError, ValueError, TypeError) as e:
+                last_error = f"invalid_output:{type(e).__name__}"
+                log_event("model_output_rejected", status=last_error,
+                          mode="live", attempt=attempt, model=settings.model_name)
+            except httpx.HTTPError as e:
+                last_error = f"api_error:{type(e).__name__}"
+                log_event("model_call_failed", status=last_error,
+                          mode="live", attempt=attempt, model=settings.model_name)
+        log_event("classifier_degraded", status=last_error, mode="live")
+        return _degraded_result(last_error)
+    finally:
+        _in_flight.release()
 
 
 def _classify_fixture(ticket_id: str) -> ClassifierResult:

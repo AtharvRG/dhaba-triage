@@ -8,8 +8,9 @@ from fastapi.testclient import TestClient
 def client(tmp_path, monkeypatch):
     monkeypatch.setenv("TRIAGE_MODE", "fixture")
     from app.main import app          # imported once, cached by python
-    from app import store
+    from app import metrics, store
     store.init(str(tmp_path / "test.db"))   # fresh DB per test — this line runs every time
+    metrics.counters.clear()
     with TestClient(app) as c:
         yield c
 
@@ -107,3 +108,12 @@ def test_big_refund_requires_human(client, tickets):
     r = post(client, "T-1006", tickets)         # Rs 1499 refund
     assert r["refund"]["refund"] is True
     assert r["needs_human"] is True             # above the release threshold
+
+
+def test_metrics_endpoint_counts(client, tickets):
+    post(client, "T-1004", tickets)   # auto-resolved (no human)
+    post(client, "T-1002", tickets)   # needs human
+    m = client.get("/metrics").json()
+    assert m["triage_total"] == 2
+    assert m["auto_resolved"] == 1
+    assert m["needs_human"] == 1
