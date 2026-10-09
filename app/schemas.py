@@ -71,3 +71,15 @@ class TriageResponse(BaseModel):
     confidence: float = 0.0
     degraded: bool = False    # True when we fell back (bad model output etc.)
     trace_id: str = ""        # ties logs together without leaking content
+
+class BillingFacts(BaseModel):
+    """Deterministic facts extracted from purchases[] — no opinions here."""
+    has_successful_renewal: bool
+    last_renewal_amount: int = 0
+    last_renewal_at: datetime | None = None
+    days_since_last_renewal: float | None = None
+    app_opens_since_renewal: int = 0
+    is_trial_conversion: bool = False        # ₹1 trial then auto-renewal ~24h later
+    successful_renewal_count: int = 0
+    has_pending_payment: bool = False        # status == 'initiated' (T-1005)
+    has_recent_failure: bool = False         # a failed renewal exists
