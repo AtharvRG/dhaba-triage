@@ -102,7 +102,13 @@ def _call_model(system: str, user: str) -> str:
         timeout=20.0,
     )
     resp.raise_for_status()
-    return resp.json()["choices"][0]["message"]["content"]
+    content = resp.json()["choices"][0]["message"]["content"]
+    # Some models return content as a list of text blocks rather than a string.
+    if isinstance(content, list):
+        content = "".join(
+            part.get("text", "") for part in content if isinstance(part, dict)
+        )
+    return content
 
 
 def _degraded_result(reason: str) -> ClassifierResult:
@@ -138,7 +144,7 @@ def _classify_live(user_prompt: str) -> ClassifierResult:
         try:
             raw = _call_model(SYSTEM_PROMPT, user_prompt)
             return _validate(raw)
-        except (json.JSONDecodeError, ValidationError, ValueError) as e:
+        except (json.JSONDecodeError, ValidationError, ValueError, TypeError) as e:
             last_error = f"invalid_output:{type(e).__name__}"
             log_event("model_output_rejected", status=last_error,
                       mode="live", attempt=attempt, model=settings.model_name)
@@ -172,9 +178,13 @@ HUMAN_REQUIRED_CATEGORIES = {
     Category.PAYMENT_FAILURE,# gateway investigation
 }
 LOW_CONFIDENCE = 0.6
+REFUND_HUMAN_RELEASE_THRESHOLD = 999
 
 
-def needs_human_final(result: ClassifierResult, report: SanitizeReport) -> bool:
+def needs_human_final(result: ClassifierResult, report: SanitizeReport,
+                      refund: RefundDecision) -> bool:
+    if refund.refund and refund.amount_inr > REFUND_HUMAN_RELEASE_THRESHOLD:
+        return True
     if report.injection_detected:
         return True
     if result.category in HUMAN_REQUIRED_CATEGORIES:
