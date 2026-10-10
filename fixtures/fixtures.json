@@ -1,0 +1,86 @@
+{
+  "T-1001": {
+    "category": "refund_request",
+    "severity": "P2",
+    "confidence": 0.95,
+    "reply_draft": "Hi, I'm really sorry for the surprise — I completely understand your frustration. What happened is that your Rs 1 trial converted into a subscription, which triggered the Rs 249 charge. Since you haven't opened the app since that charge, we've refunded the full Rs 249 — no further action is needed from you. If you'd like, I can also cancel the subscription so you're not charged again.",
+    "needs_human_suggestion": false
+  },
+  "T-1002": {
+    "category": "crash_bug",
+    "severity": "P1",
+    "confidence": 0.95,
+    "reply_draft": "Really sorry about this — the app crashing right after yesterday's update isn't the experience we want for you, especially as a paying member. Please try uninstalling and reinstalling the app once; your account and plan won't be affected. If it still closes immediately on your Redmi Note 12 (Android 13), reply here and we'll escalate it to our engineering team as a priority. Thanks for your patience — we'll get you ordering again soon.",
+    "needs_human_suggestion": true
+  },
+  "T-1003": {
+    "category": "data_loss",
+    "severity": "P2",
+    "confidence": 0.9,
+    "reply_draft": "Hi! Sorry about this — losing your order history right after switching phones is really frustrating. Since you're signed in with the same Google account, our team can look into restoring your past orders. Could you reply with your new device model and the app version you're on, so we can investigate faster? We'll get this sorted for you as soon as possible.",
+    "needs_human_suggestion": true
+  },
+  "T-1004": {
+    "category": "cancellation",
+    "severity": "P2",
+    "confidence": 0.9,
+    "reply_draft": "Hi there — we've received your cancellation request and it's noted on your account. Since no payment was successfully charged on your record, there's nothing to refund and you won't be billed. Sorry for any trouble that led to this! If you'd like to tell us what went wrong or change your mind, we're here anytime.",
+    "needs_human_suggestion": false
+  },
+  "T-1005": {
+    "category": "payment_failure",
+    "severity": "P1",
+    "confidence": 0.9,
+    "reply_draft": "Bhai, maine aapka case check kiya — aapka ₹249 ka payment abhi bhi process ho raha hai, humare records me abhi koi successful charge complete nahi hua hai, isliye app free version dikha raha hai. Jaise hi payment complete hoga, plan automatically activate ho jayega — thodi der baad app refresh karke check kar lena. Kyunki humari taraf se abhi koi successful charge nahi hua hai, agar payment fail bhi ho jaye to humne aapka koi paisa nahi liya hoga. Screenshot bhej dena, hum is ticket par nazar rakh rahe hain.",
+    "needs_human_suggestion": true
+  },
+  "T-1006": {
+    "category": "refund_request",
+    "severity": "P2",
+    "confidence": 0.92,
+    "reply_draft": "Hi, we're really sorry about the surprise renewal — we understand you'd stopped using the app and didn't want to be charged again. Since there's been no usage since this renewal, we've approved a full refund of Rs 1499, and it will be credited back to your original payment method. You don't need to do anything further to receive it. If you'd also like us to make sure the plan doesn't renew next time, just reply here and we'll help with that too.",
+    "needs_human_suggestion": true
+  },
+  "T-1007": {
+    "category": "feature_request",
+    "severity": "P3",
+    "confidence": 0.97,
+    "reply_draft": "Thank you so much for being with us since June — we're glad you're enjoying the app! We've noted your request for Marathi language support and shared it with our product team. We can't promise a timeline just yet, but requests from loyal users like you genuinely help us prioritize. If you have any other suggestions, we'd love to hear them!",
+    "needs_human_suggestion": false
+  },
+  "T-1008": {
+    "category": "fraud_dispute",
+    "severity": "P0",
+    "confidence": 0.9,
+    "reply_draft": "I'm sorry about this — I understand the worry, and we're taking it seriously. I can confirm a refund of Rs 249 for the most recent renewal has already been processed, since the app showed no use after that charge. We're reviewing the other charges on your father's card, and our team will follow up with you directly on those. If you can share the card statement details, it will help us look into them faster.",
+    "needs_human_suggestion": true
+  },
+  "T-1009": {
+    "category": "duplicate_charge",
+    "severity": "P2",
+    "confidence": 0.9,
+    "reply_draft": "Hi, we checked your billing records carefully. We can see only one successful charge of Rs 249, from a day ago — there is no second charge from our side. Sometimes a bank statement shows a temporary authorisation that looks like a duplicate, but it reverses on its own within a few days. If a second Rs 249 debit is still showing after that, please send us a screenshot of your statement and we'll dig in right away.",
+    "needs_human_suggestion": true
+  },
+  "T-1010": {
+    "category": "invoice_request",
+    "severity": "P3",
+    "confidence": 0.97,
+    "reply_draft": "Hi! Thanks for reaching out — we're happy to help with the GST invoice for your annual payment of Rs 1499. We'll get it issued with your company details: Acme Interiors, GSTIN 29ABCDE1234F1Z5. It will be sent to your registered email address shortly. If you'd like it on a different email ID or need any additional details on the invoice, just let us know!",
+    "needs_human_suggestion": true
+  },
+  "T-1011": {
+    "category": "pre_sales",
+    "severity": "P2",
+    "confidence": 0.95,
+    "reply_draft": "Hi there! Thanks for checking with us before subscribing — that's a great question. I don't want to guess on the offline details, so I'm confirming with our team and will follow up shortly with exactly how premium works offline. In the meantime, rest assured there's no charge on your account yet, so nothing is pending while we get you the answer. Thanks for your patience!",
+    "needs_human_suggestion": true
+  },
+  "T-1012": {
+    "category": "refund_request",
+    "severity": "P2",
+    "confidence": 0.85,
+    "reply_draft": "Sorry for the trouble — that's not the experience we want you to have. We've approved a full refund of Rs 249 for your recent renewal, and it should reach your account within a few business days. If you'd like, tell us what wasn't working and we'll be glad to help. Thanks for giving Dhaba a try.",
+    "needs_human_suggestion": false
+  }
+}

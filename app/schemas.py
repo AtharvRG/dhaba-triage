@@ -71,6 +71,9 @@ class TriageResponse(BaseModel):
     confidence: float = 0.0
     degraded: bool = False    # True when we fell back (bad model output etc.)
     trace_id: str = ""        # ties logs together without leaking content
+    injection_detected: bool = False
+    degrade_reason: str | None = None
+    replayed: bool = False
 
 class BillingFacts(BaseModel):
     """Deterministic facts extracted from purchases[] — no opinions here."""
@@ -83,3 +86,12 @@ class BillingFacts(BaseModel):
     successful_renewal_count: int = 0
     has_pending_payment: bool = False        # status == 'initiated' (T-1005)
     has_recent_failure: bool = False         # a failed renewal exists
+
+class ClassifierResult(BaseModel):
+    category: Category
+    severity: Severity
+    confidence: float = Field(ge=0.0, le=1.0)
+    reply_draft: str
+    needs_human_suggestion: bool = False
+    degraded: bool = False
+    degrade_reason: str | None = None
